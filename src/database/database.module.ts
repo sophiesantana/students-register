@@ -16,6 +16,8 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       synchronize: false,
+      entities: ['src/entities/*.ts'],
+      migrations: ['src/migrations/*.ts'],
     }),
   ],
 })
