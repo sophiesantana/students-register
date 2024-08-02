@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { validate } from 'class-validator';
+import { IsUUID, validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class StudentsService {
@@ -40,11 +41,20 @@ export class StudentsService {
     return this.studentsRepository.findOneBy({ id });
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: string, updateStudentDto: UpdateStudentDto) {
+    const student = await this.studentsRepository.findOneBy({ id });
+    if (!student) {
+      throw new NotFoundException(`Estudante com esse id não encontrado.`);
+    }
+
+    if (updateStudentDto.name) {
+      student.name = updateStudentDto.name;
+    }
+
+    return this.studentsRepository.save(student);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  remove(id: string) {
+    return this.studentsRepository.delete(id);
   }
 }
