@@ -19,7 +19,7 @@ export class StudentsService {
     const student = plainToInstance(Student, createStudentDto);
 
     const errors = await validate(student);
-    if (errors) {
+    if (errors.length > 0) {
       const messages = errors.map(
         (error) => `${error.property}: ${Object.values(error.constraints).join(', ')}`,
       );
