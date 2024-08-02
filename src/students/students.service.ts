@@ -1,19 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { Student } from './entities/student.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class StudentsService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectRepository(Student)
+    private studentsRepository: Repository<Student>,
+  ) {}
+
+  async create(createStudentDto: CreateStudentDto): Promise<Student> {
+    const student = plainToInstance(Student, createStudentDto);
+
+    const errors = await validate(student);
+    if (errors) {
+      const messages = errors.map(
+        (error) => `${error.property}: ${Object.values(error.constraints).join(', ')}`,
+      );
+      throw new BadRequestException(messages);
+    }
+
+    return this.studentsRepository.save(createStudentDto);
   }
 
-  findAll() {
-    return `This action returns all students`;
+  async findByParams(params: Partial<Student>): Promise<Student[]> {
+    return this.studentsRepository.find({ where: params });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  findAll(): Promise<Student[]> {
+    return this.studentsRepository.find();
+  }
+
+  findOne(id: string): Promise<Student> {
+    return this.studentsRepository.findOneBy({ id });
   }
 
   update(id: number, updateStudentDto: UpdateStudentDto) {
