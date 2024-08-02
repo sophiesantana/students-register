@@ -9,7 +9,7 @@ const config: DataSourceOptions = {
   password: String(process.env.DB_PASSWORD),
   database: process.env.DB_NAME,
   migrations: ['src/migrations/*.ts'],
-  entities: ['src/entities/**/*.ts'],
+  entities: [`${__dirname}/src/**/*.entity.{ts,js}`],
   subscribers: ['src/services/**/*.ts'],
 };
 
