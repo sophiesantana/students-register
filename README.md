@@ -1,4 +1,4 @@
-# API Node com Nestjs, TypeScript, Postgres e Docker
+# API Node com Nestjs, TypeScript, Postgres, Docker, Jest para testes unitários além de CI/CD.
 
 ## Descrição
 
