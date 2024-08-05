@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3000
 
-ENTRYPOINT [ "npm", "run" ]
+ENTRYPOINT [ "npm", "run"]

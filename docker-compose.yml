@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   backend:
-    container_name: students-backend
+    container_name: api-nest-students
     build: .
     env_file:
       .env
@@ -20,6 +20,8 @@ services:
       DB_NAME: postgres
     depends_on:
       - db
+    networks:
+      - react-students-network
 
   db:
     image: postgres:15
@@ -31,6 +33,13 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - react-students-network
 
 volumes:
   postgres-data-dev:
+
+networks:
+  react-students-network:
+    name: react-students-network
+    driver: bridge
